@@ -15,7 +15,7 @@ module.exports = {
     },
     sourceType: "module"
 },
-    plugins: ["react", "json", "prettier", "uu5"],
+    plugins: ["react", "json", "prettier"],
 extends: ["eslint:recommended", "plugin:react/recommended", "prettier", "plugin:json/recommended", "plugin:uu5/recommended"],
     rules: {
     "no-const-assign": "warn",
