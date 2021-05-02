@@ -1,27 +1,42 @@
-const nodemon = require('nodemon');
-  const ngrok = require('ngrok');
-  const config = require('config');
+const nodemon = require("nodemon");
+const ngrok = require("ngrok");
+const config = require("config");
 
-  const BOT_PORT = config.get('PORT') || 8007;
-  // const BOT_TUNNEL_SUBDOMAIN = config.get('botTunnelSubDomain') || '';
-  const VERIFY_TOKEN = config.get('VERIFY_TOKEN');
+const BOT_PORT = config.get("PORT") || 8007;
+// const BOT_TUNNEL_SUBDOMAIN = config.get("botTunnelSubDomain") || "";
+const VERIFY_TOKEN = config.get("VERIFY_TOKEN");
 
-	const SCRIPT_INDEX = './index.js';
+const SCRIPT_INDEX = "./index.js";
 
-  const mon = nodemon({
+const mon = nodemon({
     script: SCRIPT_INDEX
-	});
+});
 
-	ngrok.connect({
-		addr: BOT_PORT,
-		onStatusChange: status => {
-			if(status == 'closed') {
-				console.log(`\nTunnel closed`)
-			}
-		},
-	}).then(url => {
-		// const url = client.url.replace('http://', 'https://');
+async function main() {
+    let connection;
+    try {
+        connection = await ngrok.connect({
+            addr: BOT_PORT,
+            onStatusChange: status => {
+                if (status === "closed") {
+                    console.log(`\nTunnel closed`)
+                }
+            },
+        });
+    } catch (e) {
+        console.error(e);
+    }
+    let {url} = connection;
+    startupLog({url, VERIFY_TOKEN})
+}
 
+process.once("SIGINT", function () {
+    ngrok.disconnect().then();
+    console.log(`BootBot server closed`);
+    process.exit(0);
+});
+
+function startupLog({url, VERIFY_TOKEN}) {
     console.log(`
      ____    ___    ___   ______  ____    ___   ______
     |    \\  /   \\  /   \\ |      T|    \\  /   \\ |      T
@@ -38,10 +53,4 @@ const nodemon = require('nodemon');
     Verify Token: ${VERIFY_TOKEN}
     Press Ctrl + C to stop.
     `);
-	}).catch(err => console.log(err))
-
-  process.once('SIGINT', function () {
-    ngrok.disconnect().then();
-    console.log(`BootBot server closed`);
-    process.exit(0);
-  });
+}
