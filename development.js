@@ -29,6 +29,7 @@ async function main() {
     let {url} = connection;
     startupLog({url, VERIFY_TOKEN})
 }
+main();
 
 process.once("SIGINT", function () {
     ngrok.disconnect().then();

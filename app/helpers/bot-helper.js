@@ -1,17 +1,17 @@
 /**
  * calls ask method on convo
- * @param convo
+ * @param entity
  * @param question
  * @returns {Promise<>}
  */
-function convoAsk(convo, question) {
+function ask(entity, question) {
     return new Promise(((resolve) => {
-        convo.ask(question, (payload) => {
+        entity.ask(question, (payload) => {
             resolve(payload)
         })
     }))
 }
 
 module.exports = {
-    convoAsk
+    ask
 }

@@ -1,9 +1,10 @@
 const BootBot = require("bootbot");
 const config = require("config");
 const fetch = require("node-fetch");
-const util = require("util");
+const {ask} = require("./app/helpers/bot-helper")
 
 const searchPackages = require("./app/modules/search-packages");
+const packageInfo = require("./app/modules/package-info");
 
 var port = process.env.PORT || config.get("PORT");
 
@@ -13,39 +14,26 @@ const bot = new BootBot({
   appSecret: config.get("APP_SECRET")
 });
 
-bot.module(searchPackages);
-
-const MOVIE_API = "http://www.omdbapi.com/?apikey=8df4f6a8";
+let botModules = [searchPackages, packageInfo];
+let messages = [];
+botModules.forEach((bModule) => {
+  bot.module(bModule.botModule);
+  messages.push(bModule.keywords);
+})
 
 bot.on("message", (payload, chat) => {
 	const text = payload.message.text;
-	//console.log(`The user said: ${text}`);
+	console.log(`The user said: ${text}`);
 });
 
-bot.hear(["hello", "hi"], (payload, chat) => {
-	console.log("The user said 'hello' or 'hi'!");
-
-  chat.say("If you want movie info, tel me 'movie' and the movie name");
+bot.hear([/^(?!.*(search modules|module info|Search modules|Module info))/], async (payload, chat) => {
+  // await chat.say({ text: "Hi, I'll help you find info about modules.", buttons: messages });
+  await chat.say("Hi, You can ask me to 'search modules' or to get 'module info'.");
+  // await ask(chat, {
+  //   text: "Hi, You can ask me to 'search modules' or to get 'module info'.",
+  //   quickReplies: messages
+  // });
 });
 
-bot.hear(/movie (.*)/i, (payload, chat, data) => {
-  chat.conversation((conversation) => {
-    const movieName = data.match[1];
-    console.log(movieName);
-
-    fetch(MOVIE_API + "&t=" + movieName).then(res => res.json()).then(json => {
-      console.log(JSON.stringify(json));
-
-      if (json.Response == "False") {
-        conversation.say("movie " + movieName + " not found")
-      } else {
-        conversation.say("year " + json.Year);
-        conversation.say("Runtime " + json.Runtime);
-      }
-    })
-
-    conversation.end();
-  })
-})
 
 bot.start(port);

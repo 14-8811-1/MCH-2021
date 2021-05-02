@@ -6,7 +6,7 @@ const fetch = require("node-fetch");
 const NPMS_API = "https://api.npms.io/v2/";
 
 /**
- * Used to search modules accoring to params
+ * Used to search modules according to params
  * @param query
  * @param allowUnstable
  * @param allowInsecure
@@ -33,6 +33,13 @@ async function dataObjectFetch(name) {
     return _performFetch(url);
 }
 
+/**
+ * perform the fetch to specific url
+ * throws error if the status code is not 2xx
+ * @param url
+ * @returns {Promise<>}
+ * @private
+ */
 async function _performFetch(url) {
     let data = await fetch(url);
     let results = [];
