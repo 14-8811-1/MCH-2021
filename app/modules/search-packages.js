@@ -2,9 +2,12 @@ const {isValid} = require("../helpers/validation-helper");
 const {ask} = require("../helpers/bot-helper");
 const {dataListFetch} = require("../api/npms-api");
 
+/**
+ * Conversation for searching modules according to query
+ *
+ */
 const bModule = {
     keywords: ["search modules"],
-    allKeywords: [],
     botModule: (bot) => {
         const conversation = async (convo) => {
             await questions.askQuery(convo);
@@ -72,7 +75,7 @@ const bModule = {
 const questions = {
     askQuery: async (convo) => {
         let response = await ask(convo, "Describe what you are looking for in few words (1-5 words)");
-        let query = response.message.text;
+        let query = response.message.text.toLowerCase();
         if (query === "end conversation") {
             await convo.say(`End of the conversation.`)
             convo.end();
@@ -85,7 +88,7 @@ const questions = {
             text: "Allow also unstable modules? (yes/no)",
             quickReplies: validBoolValues
         });
-        let allowUnstable = response.message.text;
+        let allowUnstable = response.message.text.toLowerCase();
         if (allowUnstable === "end conversation") {
             await convo.say(`End of the conversation.`)
             convo.end();
@@ -102,7 +105,7 @@ const questions = {
             text: "Allow also insecure modules? (yes/no)",
             quickReplies: validBoolValues
         });
-        let allowInsecure = response.message.text;
+        let allowInsecure = response.message.text.toLowerCase();
         if (allowInsecure === "end conversation") {
             await convo.say(`End of the conversation.`)
             convo.end();
@@ -119,7 +122,7 @@ const questions = {
             text: "how many modules do you want to be listed? (1-5)",
             quickReplies: validLimitValues
         });
-        let limit = response.message.text;
+        let limit = response.message.text.toLowerCase();
         if (limit === "end conversation") {
             await convo.say(`End of the conversation`)
             convo.end();

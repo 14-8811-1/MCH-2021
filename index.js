@@ -14,6 +14,10 @@ const bot = new BootBot({
   appSecret: config.get("APP_SECRET")
 });
 
+/**
+ * Load the conversations in the separated modules and register them to the bot
+ *
+ */
 let botModules = [searchPackages, packageInfo];
 let messages = [];
 botModules.forEach((bModule) => {
@@ -21,18 +25,19 @@ botModules.forEach((bModule) => {
   messages.push(bModule.keywords);
 })
 
+/**
+ * just for debugging
+ */
 bot.on("message", (payload, chat) => {
 	const text = payload.message.text;
 	console.log(`The user said: ${text}`);
 });
 
+/**
+ * default answer if the message does not match exact command to start the conversation
+ */
 bot.hear([/^(?!.*(search modules|module info|Search modules|Module info))/], async (payload, chat) => {
-  // await chat.say({ text: "Hi, I'll help you find info about modules.", buttons: messages });
   await chat.say("Hi, You can ask me to 'search modules' or to get 'module info'.");
-  // await ask(chat, {
-  //   text: "Hi, You can ask me to 'search modules' or to get 'module info'.",
-  //   quickReplies: messages
-  // });
 });
 
 

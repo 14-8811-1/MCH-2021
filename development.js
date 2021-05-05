@@ -12,6 +12,10 @@ const mon = nodemon({
     script: SCRIPT_INDEX
 });
 
+/**
+ * ngrok startup
+ *
+ */
 async function main() {
     let connection;
     try {

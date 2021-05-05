@@ -2,6 +2,13 @@ const {isValid} = require("../helpers/validation-helper");
 const {ask} = require("../helpers/bot-helper");
 const {dataObjectFetch, dataListFetch} = require("../api/npms-api");
 
+/**
+ * Conversation to load basic info about exact module
+ * If the exact module is not found, it performs the search for modules with
+ * similar name and ask the user if it what he was looking for, but only in case
+ * that it found a module
+ *
+ */
 const bModule = {
     keywords: ["module info"],
     botModule: (bot) => {
@@ -81,7 +88,7 @@ const bModule = {
 const questions = {
     askName: async (convo) => {
         let response = await ask(convo, "What module are you looking for?");
-        let name = response.message.text;
+        let name = response.message.text.toLowerCase();
         if (name === "end conversation") {
             await convo.say(`End of the conversation.`)
             convo.end();
@@ -94,7 +101,7 @@ const questions = {
             text: `didn't you mean ${name}? (yes/no)`,
             quickReplies: validBoolValues
         });
-        let showFromSearch = response.message.text;
+        let showFromSearch = response.message.text.toLowerCase();
         if (showFromSearch === "end conversation") {
             await convo.say(`End of the conversation.`)
             convo.end();
