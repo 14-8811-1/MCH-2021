@@ -128,9 +128,9 @@ const questions = {
             convo.end();
         } else if (!isValid(limit, validLimitValues)) {
             await convo.say(`Invalid input, try again or type 'end conversation' to end the conversation`)
-            await questions.AskLimit(convo, Number(validLimitValues));
+            await questions.AskLimit(convo, validLimitValues);
         } else {
-            convo.set("limit", limit);
+            convo.set("limit", Number(limit));
         }
     },
 }
